@@ -209,7 +209,7 @@ export class Lively extends Component {
 				color="orange"
 				onTabSwitch={ this.handleTabSwitch.bind(this) }
 			>
-				<Tab icon="loading" title="Loadig">foo</Tab>
+				<Tab icon="loading" title="Loading">foo</Tab>
 				<Tab icon="warning" title="Warning">bar</Tab>
 				<Tab icon={(<span>[T]&nbsp;</span>)} title="Tab3">baz</Tab>
 			</Tabs>

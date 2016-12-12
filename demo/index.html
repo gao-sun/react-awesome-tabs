@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React Awesome Tabs</title>
+	<link rel="stylesheet" href="../dist/react-awesome-tabs.css">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="title">
+		<div class="text">React Awesome Tabs</div>
+		<div class="subtitle">Get your components together.</div>
+		<a target="_blank" href="https://github.com/gao-sun/react-awesome-tabs" class="button">Github</a>
+	</div>
+	<div class="content">
+		<h2>Get Started</h2>
+		<pre><code class="bash"># Install via npm
+npm install react-awesome-tabs</code></pre>
+		<pre><code class="javascript">// Import awesome tabs
+import Tabs, { Tab } from 'react-awesome-tabs';</code></pre>
+		<pre><code class="html">&lt;!-- Don't forget style sheet --&gt;
+&lt;link rel="stylesheet" href="path/to/css/react-awesome-tabs.css"&gt;</code></pre>
+		<pre><code class="javascript">// Let's do the simple one
+export class Simple extends Component {
+    handleTabSwitch(active) {
+        this.setState({ activeTab: active });
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeTab: 0
+        };
+    }
+
+    render() {
+        return (
+            &lt;Tabs
+                active={ this.state.activeTab }
+                onTabSwitch={ this.handleTabSwitch.bind(this) }
+            &gt;
+                &lt;Tab title="Tab1"&gt;foo&lt;/Tab&gt;
+                &lt;Tab title="Tab2"&gt;bar&lt;/Tab&gt;
+                &lt;Tab title="Tab3"&gt;baz&lt;/Tab&gt;
+            &lt;/Tabs&gt;
+        );
+    }
+}
+
+ReactDOM.render((
+    &lt;Simple&gt;&lt;/Simple&gt;
+), document.getElementById('simple'));</code></pre>
+<div>View full demo code <a target="_blank" href="https://github.com/gao-sun/react-awesome-tabs/blob/master/src/js/test.js">here</a>.</div>
+	</div>
+	<div class="content">
+		<h2>1. Simple One</h2>
+		<div class="component" id="simple"></div>
+	</div>
+	<div class="content">
+		<h2>2. Drag It!</h2>
+		<div class="component" id="drag"></div>
+	</div>
+	<div class="content">
+		<h2>3. Let's Make Some Change...</h2>
+		<div class="component" id="change"></div>
+	</div>
+	<div class="content">
+		<h2>4. Make It Lively as Well</h2>
+		<div class="component" id="lively"></div>
+	</div>
+</body>
+<script src="../dist/react-awesome-tabs.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</html>

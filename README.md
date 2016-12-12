@@ -10,7 +10,7 @@ Live demo and get started @[react-awesome-tabs](http://gao-sun.github.io/react-a
 
 **react-awesome-tabs** uses a 'Redux' way to manage all the things, that is to say there is no 'state' in this component. All the changes are based on 'property'.
 
-### <Tabs>
+### &lt;Tabs&gt;
 #### Variables
 |Property Name|Type|Description|
 |---|---|---|
@@ -26,7 +26,7 @@ Live demo and get started @[react-awesome-tabs](http://gao-sun.github.io/react-a
 |onTabClose|(index)|Index needs to be closed.|
 |onTabAdd|()||
 
-### <Tab>
+### &lt;Tab&gt;
 #### Variables
 |Property Name|Type|Description|
 |---|---|---|

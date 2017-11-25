@@ -18,6 +18,7 @@ Live demo and get started @[react-awesome-tabs](http://gao-sun.github.io/react-a
 |draggable|Boolean|When it is **true**, **onTabPositionChange** is required as well.|
 |showAdd|Boolean|Show the add button in the right. **onTabAdd** is required.|
 |color|String|Change the border color.|
+|hideTooltip|Boolean|Hide tooltips for all tabs.|
 #### Functions
 |Property Name|Parameter|Description|
 |---|---|---|
@@ -33,3 +34,5 @@ Live demo and get started @[react-awesome-tabs](http://gao-sun.github.io/react-a
 |title|String||
 |showClose|Boolean||
 |icon|String or Component|Accpetable strings: "loading", "warning", or put your own icon in it.|
+|hideTooltip|Boolean|Hide tooltip for this tab.|
+|tooltip|String|Custom tooltip text for this tab.|

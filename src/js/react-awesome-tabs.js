@@ -1,151 +1,172 @@
 import React, { Component } from 'react';
 
 export class Tabs extends Component {
-	dragTarget = null;
-	mouseMoveHandler = this.handleMouseMove.bind(this);
-	mouseUpHandler = this.handleMouseUp.bind(this);
-	tooltipTimeout = null;
-	singleTabWidth = 0;
-	tabTotal = 0;
+    dragTarget = null;
+    mouseMoveHandler = this.handleMouseMove.bind(this);
+    mouseUpHandler = this.handleMouseUp.bind(this);
+    tooltipTimeout = null;
+    singleTabWidth = 0;
+    singleTabWidthInPercent = 0;
+    tabTotal = 0;
 
-	switchTab(index) {
-		this.props.onTabSwitch(index);
-	}
+    switchTab(index) {
+        this.props.onTabSwitch(index);
+    }
 
-	handleMouseDown(event) {
-		this.dragTarget = {
-			target: event.currentTarget,
-			x: event.currentTarget.offsetLeft,
-			left: event.currentTarget.offsetLeft + 'px',
-			mouseX: event.pageX,
-			index: this.getIndexByLeft(event.currentTarget.offsetLeft),
-		};
-	}
+    recalculateSingleTabWidth() {
+        if (this.props.maxTabWidth && this.refs.tabs) {
+            const one = this.refs.tabs.offsetWidth / 100;
+            const percentSingleTabWidth = this.singleTabWidthInPercent * one;
+            const actualSingleTabWidth = Math.min(percentSingleTabWidth, this.props.maxTabWidth);
+            this.singleTabWidth = (actualSingleTabWidth * 100) / this.refs.tabs.offsetWidth;
+        }
+    }
 
-	handleMouseUp() {
-		this.dragTarget = null;
-		this.forceUpdate();
-	}
+    handleMouseDown(event) {
+        this.recalculateSingleTabWidth();
 
-	handleMouseMove(event) {
-		// Draggable
-		if(this.dragTarget) {
-			event.preventDefault();
-			event.stopPropagation();
+        this.dragTarget = {
+            target: event.currentTarget,
+            x: event.currentTarget.offsetLeft,
+            left: event.currentTarget.offsetLeft + 'px',
+            mouseX: event.pageX,
+            index: this.getIndexByLeft(event.currentTarget.offsetLeft),
+        };
+    }
 
-			const dragTarget = this.dragTarget;
-			const target = dragTarget.target;
-			const one = this.refs.tabs.offsetWidth / 100;
-			const maxLeft = one + one * this.singleTabWidth * (this.tabTotal - 1); 
+    handleMouseUp() {
+        this.dragTarget = null;
+        this.forceUpdate();
+    }
 
-			let left = (dragTarget.x + event.pageX - dragTarget.mouseX);
-			
-			if(left < one) {
-				left = one;
-			}
+    handleMouseMove(event) {
+        // Draggable
+        if (this.dragTarget) {
+            this.recalculateSingleTabWidth();
+            event.preventDefault();
+            event.stopPropagation();
 
-			if(left > maxLeft) {
-				left = maxLeft;
-			}
+            const dragTarget = this.dragTarget;
+            const target = dragTarget.target;
+            const one = this.refs.tabs.offsetWidth / 100;
+            const maxLeft = one + one * this.singleTabWidth * (this.tabTotal - 1);
 
-			let index = this.getIndexByLeft(left);
+            let left = (dragTarget.x + event.pageX - dragTarget.mouseX);
 
-			if(index != dragTarget.index) {
-				const a = index, b = dragTarget.index;
+            if (left < one) {
+                left = one;
+            }
 
-				this.props.onTabPositionChange(a, b);
+            if (left > maxLeft) {
+                left = maxLeft;
+            }
 
-				dragTarget.index = index;
-			}
+            let index = this.getIndexByLeft(left);
 
-			dragTarget.left = left + 'px';
-			this.hideTooltip();
-			this.forceUpdate();
-		}
-	}
+            if (index != dragTarget.index) {
+                const a = index,
+                    b = dragTarget.index;
 
-	handleClose(index, event) {
-		event.preventDefault();
-		event.stopPropagation();
-		this.props.onTabClose(index);
-	}
+                this.props.onTabPositionChange(a, b);
 
-	handleAdd(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		this.props.onTabAdd();
-	}
+                dragTarget.index = index;
+            }
 
-	getLeftByIndex(index) {
-		return 1 + this.singleTabWidth * index;
-	}
+            dragTarget.left = left + 'px';
+            this.hideTooltip();
+            this.forceUpdate();
+        }
+    }
 
-	getIndexByLeft(left) {
-		let one = this.refs.tabs.offsetWidth / 100;
-		return Math.round((left - one) / (one * this.singleTabWidth));
-	}
+    handleClose(index, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.onTabClose(index);
+    }
 
-	showTooltip(event) {
-		const text = event.currentTarget.getElementsByClassName('text')[0].innerText;
-		const left = event.currentTarget.offsetLeft;
+    handleAdd(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.onTabAdd();
+    }
 
-		if(!this.tooltipTimeout) {
-			this.tooltipTimeout = window.setTimeout(() => {
-				this.refs.tooltip.innerText = text;
-				this.refs.tooltip.style.display = 'block';
-				this.refs.tooltip.style.left = (left + 30) + 'px';
-			}, 800);
-		}
-	}
+    getLeftByIndex(index) {
+        this.recalculateSingleTabWidth();
+        return 1 + this.singleTabWidth * index;
+    }
 
-	hideTooltip() {
-		window.clearTimeout(this.tooltipTimeout);
-		this.tooltipTimeout = null;
-		this.refs.tooltip.style.display = 'none';
-	}
+    getIndexByLeft(left) {
+        let one = this.refs.tabs.offsetWidth / 100;
+        return Math.round((left - one) / (one * this.singleTabWidth));
+    }
 
-	componentDidMount() {
-		if(this.props.draggable) {
-			window.addEventListener('mousemove', this.mouseMoveHandler);
-			window.addEventListener('mouseup', this.mouseUpHandler);
-		}
-	}
+    showTooltip(event) {
+        const text = event.currentTarget.getElementsByClassName('text')[0].innerText;
+        const left = event.currentTarget.offsetLeft;
 
-	componentWillUnmount() {
-		if(this.props.draggable) {
-			window.removeEventListener('mousemove', this.mouseMoveHandler);
-			window.removeEventListener('mouseup', this.mouseUpHandler);
-		}
-	}
+        if (!this.tooltipTimeout) {
+            this.tooltipTimeout = window.setTimeout(() => {
+                this.refs.tooltip.innerText = text;
+                this.refs.tooltip.style.display = 'block';
+                this.refs.tooltip.style.left = (left + 30) + 'px';
+            }, 800);
+        }
+    }
 
-	render() {
-		let props = this.props;
-		this.tabTotal = props.children.length;
-		this.singleTabWidth = 98 / this.tabTotal;
+    hideTooltip() {
+        window.clearTimeout(this.tooltipTimeout);
+        this.tooltipTimeout = null;
+        this.refs.tooltip.style.display = 'none';
+    }
 
-		let tabs = props.children.map((tab, index) => {
-			let style = {};
-			let position = index;
-			let icon = null;
+    componentDidMount() {
+        if (this.props.draggable) {
+            window.addEventListener('mousemove', this.mouseMoveHandler);
+            window.addEventListener('mouseup', this.mouseUpHandler);
+        }
+        this.forceUpdate();
+    }
 
-			if(tab.props.icon) {
-				if(typeof tab.props.icon === 'string') {
-					icon = (<TabIcon type={ tab.props.icon }></TabIcon>);
-				} else {
-					icon = tab.props.icon;
-				}
-			}
+    componentWillUnmount() {
+        if (this.props.draggable) {
+            window.removeEventListener('mousemove', this.mouseMoveHandler);
+            window.removeEventListener('mouseup', this.mouseUpHandler);
+        }
+    }
 
-			style['zIndex'] = this.tabTotal - position;
-			style['left'] = this.getLeftByIndex(position) + '%';
-			style['width'] = this.singleTabWidth + '%';
+    render() {
+        let props = this.props;
+        this.tabTotal = props.children.length;
+        this.singleTabWidth = 98 / this.tabTotal;
+        this.singleTabWidthInPercent = this.singleTabWidth;
 
-			if(this.dragTarget && this.dragTarget.index == position) {
-				style['left'] = this.dragTarget.left;
-			}
+        let tabs = props.children.map((tab, index) => {
+            let style = {};
+            let position = index;
+            let icon = null;
 
-			return (
-				<div
+            if (tab.props.icon) {
+                if (typeof tab.props.icon === 'string') {
+                    icon = (<TabIcon type={ tab.props.icon }></TabIcon>);
+                } else {
+                    icon = tab.props.icon;
+                }
+            }
+
+            style['zIndex'] = this.tabTotal - position;
+            style['left'] = this.getLeftByIndex(position) + '%';
+            style['width'] = this.singleTabWidth + '%';
+
+            if (props.maxTabWidth) {
+                style['maxWidth'] = props.maxTabWidth + 'px';
+            }
+
+            if (this.dragTarget && this.dragTarget.index == position) {
+                style['left'] = this.dragTarget.left;
+            }
+
+            return (
+                <div
 					key={ index } 
 					className={ "tab-button" + (props.active == index ? " active" : "") }
 					style={ style } 
@@ -164,26 +185,26 @@ export class Tabs extends Component {
 					</div>
 					{ tab.props.showClose ? (<div className="close" onClick={ this.handleClose.bind(this, index) }></div>) : null }
 				</div>
-			);
-		});
+            );
+        });
 
-		let panels = props.children.map((panel, index) => {
-			if(props.active != index) {
-				return null;
-			}
+        let panels = props.children.map((panel, index) => {
+            if (props.active != index) {
+                return null;
+            }
 
-			return (
-				<div 
+            return (
+                <div 
 					className="panel active"
 					key={ "panel-" + index }
 				>
 					{ panel }
 				</div>
-			);
-		});
+            );
+        });
 
-		return (
-			<div 
+        return (
+            <div 
 				className="r-a-t"
 			>
 				<div className={ "tab-wrapper" + (this.props.showAdd ? " with-add" : "") } ref="tabs">
@@ -201,22 +222,22 @@ export class Tabs extends Component {
 				<div className="tooltip" ref="tooltip">
 				</div>
 			</div>
-		);
-	}
+        );
+    }
 }
 
 const Tab = ({ children }) => {
-	return (
-		<div>{ children }</div>
-	);
+    return (
+        <div>{ children }</div>
+    );
 }
 
 const TabIcon = ({ type }) => {
-	return (
-		<div className={ "icon " + type }>
+    return (
+        <div className={ "icon " + type }>
 			{ type == 'loading' ? (<div className="mask"></div>) : null }
 		</div>
-	);
+    );
 };
 
 export default Tabs;

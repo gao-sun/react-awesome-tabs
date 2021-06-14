@@ -39,12 +39,8 @@ export class Drag extends Component {
 		let c = this.tabs[a];
 		this.tabs[a] = this.tabs[b];
 		this.tabs[b] = c;
-
-		if(this.state.activeTab == a) {
-			this.setState({ activeTab: b });
-		}else if(this.state.activeTab == b) {
-			this.setState({ activeTab: a });
-		}
+		
+		this.setState(this.state.activeTab == a ? { activeTab: b } : { activeTab: a });
 
 		this.forceUpdate()
 	}

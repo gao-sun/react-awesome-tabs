@@ -32,4 +32,4 @@ Live demo and get started @[react-awesome-tabs](http://gao-sun.github.io/react-a
 |---|---|---|
 |title|String||
 |showClose|Boolean||
-|icon|String or Component|Accpetable strings: "loading", "warning", or put your own icon in it.|
+|icon|String or Component|Acceptable strings: "loading", "warning", or put your own icon in it.|
